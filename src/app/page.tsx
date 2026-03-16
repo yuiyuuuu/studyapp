@@ -1,6 +1,7 @@
 import { FadeInSection } from "@/components/landing/FadeInSection";
 import { SectionIntro } from "@/components/landing/SectionIntro";
 import { TextAction } from "@/components/landing/TextAction";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import styles from "@/components/landing/landing.module.css";
 
 const stats = [
@@ -132,9 +133,15 @@ export default function Home() {
                   About
                 </a>
               </nav>
-              <a className={styles.navLogin} href='/login'>
-                Start Now
-              </a>
+              <div className={styles.navActions}>
+                <ThemeToggle
+                  className={styles.navThemeToggle}
+                  ariaLabel='Landing page theme'
+                />
+                <a className={styles.navLogin} href='/login'>
+                  Start Now
+                </a>
+              </div>
             </div>
           </div>
         </header>

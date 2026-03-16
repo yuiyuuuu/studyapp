@@ -1,4 +1,5 @@
 import styles from "@/components/dashboard/dashboard.module.css";
+import { InteractiveCalendar } from "@/components/dashboard/InteractiveCalendar";
 
 const schedule = [
   {
@@ -42,6 +43,12 @@ export default function CalendarPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className={styles.listCard}>
+        <p className={styles.cardLabel}>Monthly view</p>
+        <h2 className={styles.cardTitle}>Plan by date</h2>
+        <InteractiveCalendar />
       </section>
     </div>
   );

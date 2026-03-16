@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import styles from "./dashboard.module.css";
 
 type NavItem = {
@@ -35,6 +36,16 @@ const navItems: NavItem[] = [
       <svg aria-hidden="true" viewBox="0 0 24 24">
         <path d="M4 7h16v10H4z" />
         <path d="M8 11h8M8 15h5" />
+      </svg>
+    ),
+  },
+  {
+    href: "/mockexams",
+    label: "Mock Exams",
+    icon: (
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M6 4.5h12v15H6z" />
+        <path d="M9 8h6M9 12h6M9 16h4" />
       </svg>
     ),
   },
@@ -155,16 +166,10 @@ export function DashboardSidebar({
         </nav>
 
         <div className={styles.sidebarFooter}>
-          <div className={styles.helpCard}>
-            <p className={styles.helpTitle}>Need help?</p>
-            <p className={styles.helpText}>
-              Contact us if you have technical issues.
-            </p>
-            <Link className={styles.helpButton} href="/contact" onClick={handleNavigate}>
-              Contact us
-            </Link>
-          </div>
-
+          <ThemeToggle
+            className={styles.sidebarThemeToggle}
+            ariaLabel="Dashboard theme"
+          />
           <div className={styles.profileWrap} ref={profileRef}>
             {isProfileMenuOpen ? (
               <div className={styles.profileMenu} role="menu" aria-label="Profile menu">
@@ -174,6 +179,13 @@ export function DashboardSidebar({
                   onClick={handleNavigate}
                 >
                   Manage subscription
+                </Link>
+                <Link
+                  className={styles.profileMenuAction}
+                  href="/contact"
+                  onClick={handleNavigate}
+                >
+                  Contact us
                 </Link>
                 <Link
                   className={styles.profileMenuAction}

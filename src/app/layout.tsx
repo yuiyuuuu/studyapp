@@ -1,30 +1,11 @@
 import type { Metadata } from "next";
-import {
-  Inter_Tight,
-  JetBrains_Mono,
-  Playfair_Display,
-} from "next/font/google";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import "./globals.css";
 
-const interTight = Inter_Tight({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-display",
-  subsets: ["latin"],
-});
-
-const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Studyapp1 | Bold study flows",
+  title: "Studyapp1 | Organic study flow",
   description:
-    "An editorial landing page for a focused study platform built with a bold typography design system.",
+    "A warm, organic study platform interface built for focus, rhythm, and sustainable learning.",
 };
 
 export default function RootLayout({
@@ -36,11 +17,15 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var t=localStorage.getItem('studyapp-theme');document.documentElement.dataset.theme=t==='dark'?'dark':'light';}catch(e){document.documentElement.dataset.theme='light';}})();",
+          }}
+        />
       </head>
-      <body
-        className={`${interTight.variable} ${playfairDisplay.variable} ${jetBrainsMono.variable}`}
-      >
-        {children}
+      <body>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
