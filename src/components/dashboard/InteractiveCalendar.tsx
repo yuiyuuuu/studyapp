@@ -51,6 +51,13 @@ const PRIORITY_OPTIONS: Array<{
   { value: "optional", label: "Optional", color: "#22c55e" },
 ];
 const DEFAULT_PRIORITY: EventPriority = "medium";
+const PRIORITY_RANK: Record<EventPriority, number> = {
+  critical: 0,
+  high: 1,
+  medium: 2,
+  low: 3,
+  optional: 4,
+};
 
 function toDateKey(date: Date) {
   const year = date.getFullYear();
@@ -517,7 +524,14 @@ export function InteractiveCalendar() {
         {dayNumbers.map((dayNumber) => {
           const date = new Date(viewYear, viewMonth, dayNumber);
           const dateKey = toDateKey(date);
-          const hasEvents = (eventsByDate[dateKey] ?? []).length > 0;
+          const dayEvents = eventsByDate[dateKey] ?? [];
+          const hasEvents = dayEvents.length > 0;
+          const dayEventDots = [...dayEvents]
+            .sort(
+              (eventA, eventB) =>
+                PRIORITY_RANK[eventA.priority] - PRIORITY_RANK[eventB.priority],
+            )
+            .slice(0, 5);
           const isToday = dateKey === toDateKey(today);
           const isSelected = dateKey === selectedDateKey;
 
@@ -536,7 +550,20 @@ export function InteractiveCalendar() {
                 </span>
               ) : null}
               {hasEvents ? (
-                <span className={styles.calendarDayDot} aria-hidden='true' />
+                <span className={styles.calendarDayDots} aria-hidden='true'>
+                  {dayEventDots.map((entry) => (
+                    <span
+                      key={entry.id}
+                      className={styles.calendarDayDot}
+                      style={
+                        {
+                          "--priority-color": getPriorityOption(entry.priority)
+                            .color,
+                        } as CSSProperties
+                      }
+                    />
+                  ))}
+                </span>
               ) : null}
             </button>
           );
