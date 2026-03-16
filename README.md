@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Study App (Next.js)
 
-## Getting Started
+This project is configured for deployment on Heroku.
 
-First, run the development server:
+## Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+App runs at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Heroku Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Prerequisites
 
-## Learn More
+- Heroku account
+- [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+- Git repo with this project committed
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Create App and Set Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+heroku login
+heroku create <your-app-name>
+heroku stack:set heroku-24 -a <your-app-name>
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Deploy
 
-## Deploy on Vercel
+```bash
+git push heroku main
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If your default branch is `master`, use:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+git push heroku master
+```
+
+### 4. Open App
+
+```bash
+heroku open -a <your-app-name>
+```
+
+## Runtime Notes
+
+- `Procfile` defines the web process:
+  - `web: npm run start -- -H 0.0.0.0 -p $PORT`
+- Node and npm versions are pinned in `package.json` under `engines`.
+- Heroku will install dependencies and run the project build (`npm run build`) during slug compilation.
+
