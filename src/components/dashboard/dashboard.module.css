@@ -468,9 +468,81 @@
   box-shadow: var(--shadow-soft);
 }
 
+.heroPanelFocus {
+  /* background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(var(--secondary-rgb), 0.12) 0px,
+      rgba(var(--primary-rgb), 0.05) 60px,
+      rgba(var(--secondary-rgb), 0.08) 120px,
+      rgba(var(--primary-rgb), 0.06) 180px,
+      rgba(var(--secondary-rgb), 0.12) 240px
+    ),
+    linear-gradient(
+      180deg,
+      rgba(var(--secondary-rgb), 0.16),
+      rgba(var(--surface-rgb), 0.78)
+    );
+  background-size:
+    auto 100%,
+    100% 100%;
+  background-repeat:
+    repeat,
+    no-repeat;
+  will-change: background-position;
+  animation: heroPanelGradientFlow 5s linear infinite; */
+
+  background: linear-gradient(
+    270deg,
+    var(--hero-gradient-animation-1),
+    var(--hero-gradient-animation-2)
+  );
+
+  background-size: 400% 400%;
+
+  -webkit-animation: heroPanelGradientAnimation 8s ease infinite;
+  -moz-animation: heroPanelGradientAnimation 8s ease infinite;
+  animation: heroPanelGradientAnimation 8s ease infinite;
+}
+
+@keyframes heroPanelGradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* @keyframes heroPanelGradientFlow {
+  from {
+    background-position:
+      0px 0,
+      0 0;
+  }
+
+  to {
+    background-position:
+      240px 0,
+      0 0;
+  }
+} */
+
 .heroMeta {
   display: grid;
   gap: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroPanelFocus {
+    animation: none;
+    background-position:
+      0% 0%,
+      0% 0%;
+  }
 }
 
 .heroMetaLabel {

@@ -72,7 +72,7 @@ export default function AppOverviewPage() {
         </p>
       </header>
 
-      <section className={styles.heroPanel}>
+      <section className={`${styles.heroPanel} ${styles.heroPanelFocus}`}>
         <div className={styles.heroMeta}>
           <p className={styles.heroMetaLabel}>Today&apos;s focus</p>
           <p className={styles.heroMetaValue}>
