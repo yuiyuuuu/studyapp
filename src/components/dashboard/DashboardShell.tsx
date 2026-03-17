@@ -27,18 +27,10 @@ export function DashboardShell({ children }: DashboardShellProps) {
     };
 
     syncViewportState();
-    if ("addEventListener" in mediaQuery) {
-      mediaQuery.addEventListener("change", syncViewportState);
-    } else {
-      mediaQuery.addListener(syncViewportState);
-    }
+    mediaQuery.addEventListener("change", syncViewportState);
 
     return () => {
-      if ("removeEventListener" in mediaQuery) {
-        mediaQuery.removeEventListener("change", syncViewportState);
-      } else {
-        mediaQuery.removeListener(syncViewportState);
-      }
+      mediaQuery.removeEventListener("change", syncViewportState);
     };
   }, []);
 
