@@ -142,6 +142,11 @@
   gap: 0.5rem;
 }
 
+.sidebarNavItem {
+  display: grid;
+  gap: 0.35rem;
+}
+
 .sidebarLink,
 .sidebarLinkActive {
   display: inline-flex;
@@ -178,6 +183,177 @@
 .sidebarLinkActive {
   border-color: rgba(var(--primary-rgb), 0.35);
   box-shadow: inset 0 0 0 1px rgba(var(--primary-rgb), 0.25);
+}
+
+.sidebarClassSection {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: -0.35rem;
+  transition:
+    grid-template-rows 300ms var(--ease-out),
+    opacity 200ms var(--ease-out),
+    margin-top 300ms var(--ease-out);
+}
+
+.sidebarClassSectionOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 0;
+}
+
+.sidebarClassSectionInner {
+  min-height: 0;
+  overflow: hidden;
+  padding-left: 1.1rem;
+}
+
+.sidebarClassList {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.sidebarClassItem,
+.sidebarClassItemActive {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.sidebarClassToggle,
+.sidebarClassToggleActive {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 0.85rem;
+  background: transparent;
+  color: var(--muted-foreground);
+  min-height: 2rem;
+  padding: 0.32rem 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 200ms var(--ease-out),
+    background-color 200ms var(--ease-out),
+    color 200ms var(--ease-out);
+}
+
+.sidebarClassToggle:hover,
+.sidebarClassToggleActive {
+  color: var(--foreground);
+  border-color: rgba(var(--border-rgb), 0.75);
+  background: rgba(var(--primary-rgb), 0.08);
+}
+
+.sidebarClassToggleActive {
+  border-color: rgba(var(--primary-rgb), 0.32);
+  box-shadow: inset 0 0 0 1px rgba(var(--primary-rgb), 0.2);
+}
+
+.sidebarClassChevron {
+  width: 0.86rem;
+  height: 0.86rem;
+  color: currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 220ms var(--ease-out);
+}
+
+.sidebarClassChevron svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.sidebarClassChevronOpen {
+  transform: rotate(90deg);
+}
+
+.sidebarClassText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.sidebarChapterSection {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-top: -0.25rem;
+  transition:
+    grid-template-rows 280ms var(--ease-out),
+    opacity 200ms var(--ease-out),
+    margin-top 280ms var(--ease-out);
+}
+
+.sidebarChapterSectionOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 0;
+}
+
+.sidebarChapterInner {
+  min-height: 0;
+  overflow: hidden;
+  padding-left: 1.25rem;
+}
+
+.sidebarChapterList {
+  display: grid;
+  gap: 0.25rem;
+  padding-bottom: 0.2rem;
+}
+
+.sidebarChapterItemContainer {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  transition:
+    border-color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out),
+    color 0.2s var(--ease-out);
+
+  &:hover {
+    background-color: rgba(var(--primary-rgb), 0.08);
+    border-color: rgba(var(--border-rgb), 0.75);
+  }
+}
+
+.sidebarChapterItemBook {
+  height: 0.9rem;
+  width: 0.9rem;
+}
+
+.sidebarChapterItem {
+  color: var(--muted-foreground);
+  font-size: 0.63rem;
+  letter-spacing: 0.09em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  /* padding: 0.5rem; */
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.sidebarClassEmpty {
+  padding: 0.35rem 0.55rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .sidebarIcon {
@@ -410,6 +586,80 @@
 
 .mainCollapsed {
   margin-left: var(--sidebar-peek);
+}
+
+.chatWidget {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 60;
+  display: grid;
+  justify-items: end;
+  pointer-events: none;
+}
+
+.chatWidgetPanel {
+  width: min(33vw, 30rem);
+  min-width: 22rem;
+  max-width: calc(100vw - 2rem);
+  height: 75dvh;
+  margin-bottom: 0.8rem;
+  border: 1px solid rgba(var(--border-rgb), 0.8);
+  border-radius: 1.1rem;
+  background: #ffffff;
+  box-shadow: var(--shadow-float);
+  pointer-events: auto;
+  transform-origin: bottom right;
+  animation: chatWidgetScaleIn 500ms var(--ease-out) both;
+}
+
+@keyframes chatWidgetScaleIn {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.chatWidgetButton {
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  box-shadow: var(--shadow-float);
+  cursor: pointer;
+  transition:
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out),
+    filter 200ms var(--ease-out);
+}
+
+.chatWidgetButton:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover-strong);
+  filter: brightness(1.02);
+}
+
+.chatWidgetButton:active {
+  transform: scale(0.97);
+}
+
+.chatWidgetButton svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
 }
 
 .pageContent {
@@ -661,6 +911,15 @@
   background: rgba(var(--surface-rgb), 0.3);
 }
 
+.classesLoadingState {
+  display: grid;
+  justify-items: center;
+  padding: 2.5rem 1rem;
+  border: 1px dashed rgba(var(--border-rgb), 0.75);
+  border-radius: 1.5rem;
+  background: rgba(var(--surface-rgb), 0.3);
+}
+
 .classesEmptyMessage {
   font-size: clamp(1.2rem, 2.5vw, 1.4rem);
   color: var(--muted-foreground);
@@ -668,18 +927,20 @@
 
 .classesList {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.8rem;
+  padding-bottom: 3rem;
 }
 
 .classListItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
   padding: 1rem 1.1rem;
   border: 1px solid rgba(var(--border-rgb), 0.82);
   border-radius: 1.2rem;
   background: var(--card);
+  min-height: 8.4rem;
   box-shadow: var(--shadow-soft);
   transition:
     border-color 200ms var(--ease-out),
@@ -693,9 +954,16 @@
   box-shadow: var(--shadow-lift-soft);
 }
 
+.classListTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
 .classListCopy {
   display: grid;
-  gap: 0.25rem;
+  gap: 0.55rem;
 }
 
 .classListName {
@@ -704,30 +972,87 @@
   letter-spacing: -0.01em;
 }
 
+.classListMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.classListMetaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.7rem;
+  padding: 0 0.5rem;
+  border: 1px solid rgba(var(--border-rgb), 0.75);
+  border-radius: 999px;
+  background: rgba(var(--surface-rgb), 0.55);
+}
+
+.classListMetaIcon {
+  width: 0.92rem;
+  height: 0.92rem;
+  color: var(--secondary);
+}
+
+.classListMetaIcon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.classListMetaText {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
 .classListNext {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
   font-size: 0.74rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  margin-top: 1rem;
+  /* font-weight: 600; */
 }
 
-.classListArrow {
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid rgba(var(--border-rgb), 0.8);
-  border-radius: 999px;
-  background: rgba(var(--surface-rgb), 0.74);
-  color: var(--foreground);
+.classListDivider {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin: 0.25rem 0 0.1rem;
+  background: rgba(var(--border-rgb), 0.78);
+}
+
+.classListActivity {
+  color: var(--muted-foreground);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.classListBookIcon {
+  width: 2.1rem;
+  height: 2.1rem;
+  color: var(--secondary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 0.05rem;
+  background-color: var(--bookiconclasses);
+  border-radius: 0.5rem;
 }
 
-.classListArrow svg {
-  width: 1rem;
-  height: 1rem;
+.classListBookIcon svg {
+  width: 1.15rem;
+  height: 1.15rem;
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -1225,6 +1550,10 @@
     opacity: 1;
     pointer-events: auto;
     gap: 1rem;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
   }
 
   .sidebarHeader {
@@ -1263,6 +1592,28 @@
     margin-left: 0;
     padding: calc(4.5rem + 1.75rem) 1.25rem 1.25rem;
   }
+
+  .chatWidget {
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  .chatWidgetPanel {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    min-width: 0;
+    max-width: none;
+    height: 100dvh;
+    margin-bottom: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .chatWidgetButton {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 @media (max-width: 820px) {
@@ -1278,6 +1629,10 @@
 
   .pageContent {
     padding: 5rem 0 0 0;
+  }
+
+  .classesList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .classFormRowGrid {
@@ -1297,6 +1652,10 @@
 
   .helpTitle {
     font-size: 1.45rem;
+  }
+
+  .classesList {
+    grid-template-columns: 1fr;
   }
 
   .classFormRowGrid {

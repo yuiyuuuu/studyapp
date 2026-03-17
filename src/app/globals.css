@@ -48,13 +48,14 @@
   color-scheme: light;
   --hero-gradient-animation-1: rgba(254, 234, 217, 0.5);
   --hero-gradient-animation-2: #5d70528f;
+  --bookiconclasses: #8094752c; /*for now we will use set colors, but later on we will let the user choose*/
 }
 
 :root[data-theme="dark"] {
   --background: #0a0a0a;
   --foreground: #fafafa;
   --muted: #1a1a1a;
-  --muted-foreground: #737373;
+  --muted-foreground: #d7d6d6;
   --accent: #ff3d00;
   --accent-foreground: #0a0a0a;
   --primary: #fafafa;
@@ -97,6 +98,7 @@
   color-scheme: dark;
   --hero-gradient-animation-1: #ff3c004a;
   --hero-gradient-animation-2: #1a1a1abb;
+  --bookiconclasses: #fafafaae; /*for now we will use set colors, but later on we will let the user choose*/
 }
 
 html,
@@ -208,4 +210,8 @@ main {
 flex {
   display: flex;
   align-items: center;
+}
+
+.pointer {
+  cursor: pointer;
 }

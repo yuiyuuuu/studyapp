@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import styles from "@/components/dashboard/dashboard.module.css";
+import { CircularLoader } from "@/components/ui/CircularLoader";
 
 const CLASSES_STORAGE_KEY = "studyapp-classes";
 
@@ -258,6 +259,7 @@ function ClassesPage() {
 
     return parseStoredClasses(window.localStorage.getItem(CLASSES_STORAGE_KEY));
   });
+  const [isClassesReady, setIsClassesReady] = useState(false);
   const [isAddClassModalOpen, setIsAddClassModalOpen] = useState(false);
   const [showManualEntryForm, setShowManualEntryForm] = useState(false);
   const [className, setClassName] = useState("");
@@ -269,6 +271,14 @@ function ClassesPage() {
   >([]);
   const [nextRowId, setNextRowId] = useState(2);
   const [formErrors, setFormErrors] = useState<FormErrors>(createEmptyErrors);
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      setIsClassesReady(true);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, []);
 
   useEffect(() => {
     if (!isAddClassModalOpen) {
@@ -493,6 +503,7 @@ function ClassesPage() {
         CLASSES_STORAGE_KEY,
         JSON.stringify(nextStoredClasses),
       );
+      window.dispatchEvent(new Event("studyapp-classes-updated"));
     }
 
     closeAddClassModal();
@@ -510,7 +521,11 @@ function ClassesPage() {
         </p>
       </header>
 
-      {classRows.length === 0 ? (
+      {!isClassesReady ? (
+        <section className={styles.classesLoadingState}>
+          <CircularLoader label='Loading classes' size={54} />
+        </section>
+      ) : classRows.length === 0 ? (
         <section className={styles.classesEmptyState}>
           <p className={styles.classesEmptyMessage}>No classes added yet.</p>
           <button
@@ -540,18 +555,56 @@ function ClassesPage() {
                 href={`/app/classes/${classRow.id}`}
                 key={classRow.id}
               >
-                <span className={styles.classListCopy}>
-                  <span className={styles.classListName}>
-                    {classRow.className}
+                <span className={styles.classListTop}>
+                  <span className={styles.classListCopy}>
+                    <span className={styles.classListName}>
+                      {classRow.className}
+                    </span>
+                    <span className={styles.classListMeta}>
+                      <span className={styles.classListMetaItem}>
+                        <span
+                          className={styles.classListMetaIcon}
+                          aria-hidden='true'
+                        >
+                          <svg viewBox='0 0 24 24'>
+                            <path d='M4 7.5h16v10H4z' />
+                            <path d='M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5' />
+                            <path d='M4 12h16' />
+                          </svg>
+                        </span>
+                        <span className={styles.classListMetaText}>
+                          3 Units
+                        </span>
+                      </span>
+                      <span className={styles.classListMetaItem}>
+                        <span
+                          className={styles.classListMetaIcon}
+                          aria-hidden='true'
+                        >
+                          <svg viewBox='0 0 24 24'>
+                            <path d='M7 4.5h7l3 3V19.5H7z' />
+                            <path d='M14 4.5v3h3' />
+                            <path d='M9.5 11h5M9.5 14h5M9.5 17h3.5' />
+                          </svg>
+                        </span>
+                        <span className={styles.classListMetaText}>
+                          3 Materials
+                        </span>
+                      </span>
+                    </span>
                   </span>
-                  <span className={styles.classListNext}>
-                    {classRow.nextClassLabel}
+                  <span className={styles.classListBookIcon} aria-hidden='true'>
+                    <svg viewBox='0 0 24 24'>
+                      <path d='M12 6.5c-1.7-1.3-3.8-2-6-2v13c2.2 0 4.3.7 6 2m0-13c1.7-1.3 3.8-2 6-2v13c-2.2 0-4.3.7-6 2m0-13v13' />
+                    </svg>
                   </span>
                 </span>
-                <span className={styles.classListArrow} aria-hidden='true'>
-                  <svg viewBox='0 0 24 24'>
-                    <path d='m9 6 6 6-6 6' />
-                  </svg>
+                <span className={styles.classListNext}>
+                  {classRow.nextClassLabel}
+                </span>
+                <span className={styles.classListDivider} aria-hidden='true' />
+                <span className={styles.classListActivity}>
+                  Last Activity: Today
                 </span>
               </Link>
             ))}
