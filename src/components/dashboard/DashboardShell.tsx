@@ -9,6 +9,12 @@ type DashboardShellProps = {
   children: React.ReactNode;
 };
 
+const recentChatPlaceholders = [
+  { className: "CS 101", title: "Review key recursion patterns" },
+  { className: "BIO 220", title: "Quiz prep: cell signaling pathways" },
+  { className: "HIST 312", title: "Outline for industrial revolution essay" },
+];
+
 export function DashboardShell({ children }: DashboardShellProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -87,16 +93,16 @@ export function DashboardShell({ children }: DashboardShellProps) {
       <header className={styles.mobileTopbar}>
         <p className={styles.mobileTopbarBrand}>Study App</p>
         <button
-          aria-label="Open sidebar"
+          aria-label='Open sidebar'
           className={styles.mobileMenuButton}
           onClick={() => {
             setIsChatWidgetOpen(false);
             setIsMobileOpen(true);
           }}
-          type="button"
+          type='button'
         >
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M4 7h16M4 12h16M4 17h16" />
+          <svg aria-hidden='true' viewBox='0 0 24 24'>
+            <path d='M4 7h16M4 12h16M4 17h16' />
           </svg>
         </button>
       </header>
@@ -114,38 +120,133 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
       <div className={styles.chatWidget}>
         {isChatWidgetOpen ? (
-          <section
-            className={styles.chatWidgetPanel}
-            id="dashboard-chat-panel"
-            aria-label="Chat panel"
-          />
+          <div className={styles.chatWidgetPanelContainer}>
+            <section
+              className={styles.chatWidgetPanel}
+              id='dashboard-chat-panel'
+              aria-label='Chat panel'
+            >
+              <button
+                aria-label='Close chat panel'
+                className={styles.chatWidgetCloseButton}
+                onClick={() => setIsChatWidgetOpen(false)}
+                type='button'
+              >
+                <svg aria-hidden='true' viewBox='0 0 24 24'>
+                  <path d='m6 6 12 12M18 6 6 18' />
+                </svg>
+              </button>
+              <div className={styles.chatWidgetBody}>
+                <header className={styles.chatWidgetHeader}>
+                  <h2 className={styles.chatWidgetGreeting}>Hi Tan</h2>
+                  <p className={styles.chatWidgetPrompt}>
+                    What&apos;s on your mind today?
+                  </p>
+                </header>
+                <section className={styles.chatWidgetRecentSection}>
+                  <h3 className={styles.chatWidgetRecentTitle}>Recent Chats</h3>
+                  <div className={styles.chatWidgetRecentList}>
+                    {recentChatPlaceholders.map((chat) => (
+                      <button
+                        className={styles.chatWidgetRecentItem}
+                        key={`${chat.className}-${chat.title}`}
+                        type='button'
+                      >
+                        <span className={styles.chatWidgetRecentCopy}>
+                          <span className={styles.chatWidgetRecentClass}>
+                            {chat.className}
+                          </span>
+                          <span className={styles.chatWidgetRecentChatTitle}>
+                            {chat.title}
+                          </span>
+                        </span>
+                        <span
+                          className={styles.chatWidgetRecentArrow}
+                          aria-hidden='true'
+                        >
+                          <svg viewBox='0 0 24 24'>
+                            <path d='m9 6 6 6-6 6' />
+                          </svg>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              </div>
+              <nav className={styles.chatWidgetDock} aria-label='Chat sections'>
+                <button
+                  className={`${styles.chatWidgetDockItem} ${styles.chatWidgetDockItemActive}`}
+                  type='button'
+                >
+                  <span
+                    className={styles.chatWidgetDockIcon}
+                    aria-hidden='true'
+                  >
+                    <svg viewBox='0 0 24 24'>
+                      <path d='M3 10.5 12 4l9 6.5V20H3z' />
+                      <path d='M9 20v-5h6v5' />
+                    </svg>
+                  </span>
+                  <span className={styles.chatWidgetDockLabel}>Home</span>
+                </button>
+                <button className={styles.chatWidgetDockItem} type='button'>
+                  <span
+                    className={styles.chatWidgetDockIcon}
+                    aria-hidden='true'
+                  >
+                    <svg viewBox='0 0 24 24'>
+                      <path d='M4 6.5h16v11H4z' />
+                      <path d='M8 10h8M8 14h5' />
+                    </svg>
+                  </span>
+                  <span className={styles.chatWidgetDockLabel}>Classes</span>
+                </button>
+                <button className={styles.chatWidgetDockItem} type='button'>
+                  <span
+                    className={styles.chatWidgetDockIcon}
+                    aria-hidden='true'
+                  >
+                    <svg viewBox='0 0 24 24'>
+                      <path d='M5 6.5h14v9H11l-4 3v-3H5z' />
+                      <path d='M9 10h6M9 13h4' />
+                    </svg>
+                  </span>
+                  <span className={styles.chatWidgetDockLabel}>Chats</span>
+                </button>
+              </nav>
+            </section>
+          </div>
         ) : null}
 
-        <button
-          aria-controls="dashboard-chat-panel"
-          aria-expanded={isChatWidgetOpen}
-          aria-label={isChatWidgetOpen ? "Close chat panel" : "Open chat panel"}
-          className={styles.chatWidgetButton}
-          onClick={() => {
-            const nextOpen = !isChatWidgetOpen;
-            if (nextOpen && isMobileViewport && isMobileOpen) {
-              setIsMobileOpen(false);
+        {!isChatWidgetOpen || !isMobileViewport ? (
+          <button
+            aria-controls='dashboard-chat-panel'
+            aria-expanded={isChatWidgetOpen}
+            aria-label={
+              isChatWidgetOpen ? "Close chat panel" : "Open chat panel"
             }
-            setIsChatWidgetOpen(nextOpen);
-          }}
-          type="button"
-        >
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            {isChatWidgetOpen ? (
-              <path d="m6 9 6 6 6-6" />
-            ) : (
-              <>
-                <path d="M5.5 7.5h13v9h-8l-4 3v-3h-1z" />
-                <path d="M9 11h6M9 14h4" />
-              </>
-            )}
-          </svg>
-        </button>
+            className={styles.chatWidgetButton}
+            onClick={() => {
+              const nextOpen = !isChatWidgetOpen;
+              if (nextOpen && isMobileViewport && isMobileOpen) {
+                setIsMobileOpen(false);
+              }
+              setIsChatWidgetOpen(nextOpen);
+            }}
+            type='button'
+          >
+            <svg aria-hidden='true' viewBox='0 0 24 24'>
+              {isChatWidgetOpen ? (
+                <path d='m6 9 6 6 6-6' />
+              ) : (
+                <>
+                  <path d='M5.5 7.5h13v9h-8l-4 3v-3h-1z' />
+                  <path d='M9 11h6M9 14h4' />
+                </>
+              )}
+            </svg>
+          </button>
+        ) : null}
       </div>
     </div>
   );

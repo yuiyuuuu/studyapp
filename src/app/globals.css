@@ -49,6 +49,7 @@
   --hero-gradient-animation-1: rgba(254, 234, 217, 0.5);
   --hero-gradient-animation-2: #5d70528f;
   --bookiconclasses: #8094752c; /*for now we will use set colors, but later on we will let the user choose*/
+  --chaptericonsidebar: black;
 }
 
 :root[data-theme="dark"] {
@@ -99,6 +100,7 @@
   --hero-gradient-animation-1: #ff3c004a;
   --hero-gradient-animation-2: #1a1a1abb;
   --bookiconclasses: #fafafaae; /*for now we will use set colors, but later on we will let the user choose*/
+  --chaptericonsidebar: white;
 }
 
 html,
