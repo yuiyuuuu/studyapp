@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { CircularLoader } from "@/components/ui/CircularLoader";
 import styles from "./dashboard.module.css";
 
 const CLASSES_STORAGE_KEY = "studyapp-classes";
@@ -108,18 +109,14 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   const pathname = usePathname();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [sidebarClasses, setSidebarClasses] = useState<SidebarClass[]>(() => {
-    if (typeof window === "undefined") {
-      return [];
-    }
-
-    return parseSidebarClasses(
-      window.localStorage.getItem(CLASSES_STORAGE_KEY),
-    );
-  });
+  const [sidebarClasses, setSidebarClasses] = useState<SidebarClass[]>([]);
+  const [isSidebarClassesReady, setIsSidebarClassesReady] = useState(false);
   const [expandedClassIds, setExpandedClassIds] = useState<number[]>([]);
   const profileRef = useRef<HTMLDivElement | null>(null);
   const isClassesRoute = pathname.startsWith("/app/classes");
+  const shouldShowClassesSubsection =
+    isClassesRoute &&
+    (!isSidebarClassesReady || sidebarClasses.length > 0);
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -134,17 +131,31 @@ export function DashboardSidebar({
   }, []);
 
   useEffect(() => {
-    function handleClassesUpdated() {
+    function syncSidebarClasses() {
       setSidebarClasses(
         parseSidebarClasses(window.localStorage.getItem(CLASSES_STORAGE_KEY)),
       );
+      setIsSidebarClassesReady(true);
     }
 
-    window.addEventListener("storage", handleClassesUpdated);
+    function handleStorage(event: StorageEvent) {
+      if (event.key && event.key !== CLASSES_STORAGE_KEY) {
+        return;
+      }
+
+      syncSidebarClasses();
+    }
+
+    function handleClassesUpdated() {
+      syncSidebarClasses();
+    }
+
+    syncSidebarClasses();
+    window.addEventListener("storage", handleStorage);
     window.addEventListener("studyapp-classes-updated", handleClassesUpdated);
 
     return () => {
-      window.removeEventListener("storage", handleClassesUpdated);
+      window.removeEventListener("storage", handleStorage);
       window.removeEventListener(
         "studyapp-classes-updated",
         handleClassesUpdated,
@@ -236,12 +247,16 @@ export function DashboardSidebar({
                   <span>{item.label}</span>
                 </Link>
 
-                {isClassesItem ? (
+                {isClassesItem && shouldShowClassesSubsection ? (
                   <div
                     className={`${styles.sidebarClassSection} ${isClassesRoute ? styles.sidebarClassSectionOpen : ""}`}
                   >
                     <div className={styles.sidebarClassSectionInner}>
-                      {sidebarClasses.length > 0 ? (
+                      {!isSidebarClassesReady ? (
+                        <div className={styles.sidebarClassLoading}>
+                          <CircularLoader label='Loading classes' size={18} />
+                        </div>
+                      ) : (
                         <div className={styles.sidebarClassList}>
                           {sidebarClasses.map((classItem) => {
                             const isClassRouteActive =
@@ -329,10 +344,6 @@ export function DashboardSidebar({
                             );
                           })}
                         </div>
-                      ) : (
-                        <p className={styles.sidebarClassEmpty}>
-                          No classes yet
-                        </p>
                       )}
                     </div>
                   </div>
