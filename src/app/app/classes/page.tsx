@@ -1,27 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import styles from "@/components/dashboard/dashboard.module.css";
 
 const CLASSES_STORAGE_KEY = "studyapp-classes";
-
-const classCards = [
-  {
-    label: "MCAT / Biology",
-    title: "Cellular respiration",
-    text: "Three textbook excerpts, one slide deck, and a short lecture recording waiting to be summarized.",
-  },
-  {
-    label: "History 210",
-    title: "Industrial Revolution",
-    text: "Annotated reading plus professor notes ready for a comparison-style review session.",
-  },
-  {
-    label: "Calculus III",
-    title: "Vector fields",
-    text: "Problem sets and worked examples grouped into one practice lane before next week’s quiz.",
-  },
-];
 
 const WEEKDAY_OPTIONS = [
   "Monday",
@@ -181,11 +164,21 @@ function getNextClassId(classes: StoredClass[]) {
   );
 }
 
-function formatClassTimeLabel(time: string) {
-  if (!time) {
-    return time;
-  }
+function getWeekdayIndex(day: Weekday) {
+  const dayIndexLookup: Record<Weekday, number> = {
+    Sunday: 0,
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6,
+  };
 
+  return dayIndexLookup[day];
+}
+
+function isQuarterHourTime(time: string) {
   const [hoursRaw, minutesRaw] = time.split(":");
   const hours = Number(hoursRaw);
   const minutes = Number(minutesRaw);
@@ -198,16 +191,63 @@ function formatClassTimeLabel(time: string) {
     minutes < 0 ||
     minutes > 59
   ) {
-    return time;
+    return false;
   }
 
-  const helperDate = new Date();
-  helperDate.setHours(hours, minutes, 0, 0);
+  return minutes % 15 === 0;
+}
 
-  return helperDate.toLocaleTimeString("en-US", {
+function getNextClassOccurrence(
+  classSchedule: ClassScheduleEntry[],
+  fromDate: Date,
+): Date | null {
+  let nextClassDate: Date | null = null;
+
+  classSchedule.forEach((entry) => {
+    const [hoursRaw, minutesRaw] = entry.startTime.split(":");
+    const hours = Number(hoursRaw);
+    const minutes = Number(minutesRaw);
+
+    if (
+      Number.isNaN(hours) ||
+      Number.isNaN(minutes) ||
+      hours < 0 ||
+      hours > 23 ||
+      minutes < 0 ||
+      minutes > 59
+    ) {
+      return;
+    }
+
+    const dayOffset = (getWeekdayIndex(entry.day) - fromDate.getDay() + 7) % 7;
+    const candidateDate = new Date(fromDate);
+    candidateDate.setDate(fromDate.getDate() + dayOffset);
+    candidateDate.setHours(hours, minutes, 0, 0);
+
+    if (candidateDate <= fromDate) {
+      candidateDate.setDate(candidateDate.getDate() + 7);
+    }
+
+    if (!nextClassDate || candidateDate < nextClassDate) {
+      nextClassDate = candidateDate;
+    }
+  });
+
+  return nextClassDate;
+}
+
+function formatNextClassLabel(date: Date | null) {
+  if (!date) {
+    return "Next class - Schedule not set";
+  }
+
+  return `Next class - ${date.toLocaleString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
     hour: "numeric",
     minute: "2-digit",
-  });
+  })}`;
 }
 
 function ClassesPage() {
@@ -243,41 +283,16 @@ function ClassesPage() {
     };
   }, [isAddClassModalOpen]);
 
-  const renderedCards = useMemo(() => {
-    const storedCards = storedClasses.map((storedClass) => {
-      const firstScheduleEntry = storedClass.classSchedule[0];
-      const schedulePreview = firstScheduleEntry
-        ? `${firstScheduleEntry.day} ${formatClassTimeLabel(
-            firstScheduleEntry.startTime,
-          )} - ${formatClassTimeLabel(firstScheduleEntry.endTime)}`
-        : "No schedule added";
+  const classRows = useMemo(() => {
+    const now = new Date();
 
-      const moreDaysCount = Math.max(storedClass.classSchedule.length - 1, 0);
-      const moreDaysLabel =
-        moreDaysCount > 0
-          ? ` (+${moreDaysCount} more day${moreDaysCount > 1 ? "s" : ""})`
-          : "";
-
-      return {
-        key: `stored-${storedClass.id}`,
-        label: `Class #${storedClass.id}`,
-        title: storedClass.className,
-        text: `${schedulePreview}${moreDaysLabel}`,
-        meta: `${storedClass.importantDates.length} important date${
-          storedClass.importantDates.length === 1 ? "" : "s"
-        }`,
-      };
-    });
-
-    const sampleCards = classCards.map((card) => ({
-      key: `sample-${card.title}`,
-      label: card.label,
-      title: card.title,
-      text: card.text,
-      meta: "",
+    return storedClasses.map((storedClass) => ({
+      id: storedClass.id,
+      className: storedClass.className,
+      nextClassLabel: formatNextClassLabel(
+        getNextClassOccurrence(storedClass.classSchedule, now),
+      ),
     }));
-
-    return [...storedCards, ...sampleCards];
   }, [storedClasses]);
 
   function resetClassForm() {
@@ -388,6 +403,14 @@ function ClassesPage() {
         rowErrors.endTime = "Select an end time.";
       }
 
+      if (row.startTime && !isQuarterHourTime(row.startTime)) {
+        rowErrors.startTime = "Start time must be in 15-minute intervals.";
+      }
+
+      if (row.endTime && !isQuarterHourTime(row.endTime)) {
+        rowErrors.endTime = "End time must be in 15-minute intervals.";
+      }
+
       if (row.startTime && row.endTime && row.startTime >= row.endTime) {
         rowErrors.endTime = "End time must be after start time.";
       }
@@ -487,28 +510,54 @@ function ClassesPage() {
         </p>
       </header>
 
-      <div className={styles.classesActionRow}>
-        <button
-          className={styles.addClassButton}
-          onClick={openAddClassModal}
-          type='button'
-        >
-          Add a new class
-        </button>
-      </div>
+      {classRows.length === 0 ? (
+        <section className={styles.classesEmptyState}>
+          <p className={styles.classesEmptyMessage}>No classes added yet.</p>
+          <button
+            className={styles.addClassButton}
+            onClick={openAddClassModal}
+            type='button'
+          >
+            Add a new class
+          </button>
+        </section>
+      ) : (
+        <>
+          <div className={styles.classesActionRow}>
+            <button
+              className={styles.addClassButton}
+              onClick={openAddClassModal}
+              type='button'
+            >
+              Add a new class
+            </button>
+          </div>
 
-      <section className={styles.gridThree}>
-        {renderedCards.map((card) => (
-          <article className={styles.card} key={card.key}>
-            <p className={styles.cardLabel}>{card.label}</p>
-            <h2 className={styles.cardTitle}>{card.title}</h2>
-            <p className={styles.cardText}>{card.text}</p>
-            {card.meta ? (
-              <p className={styles.classCardMeta}>{card.meta}</p>
-            ) : null}
-          </article>
-        ))}
-      </section>
+          <section className={styles.classesList}>
+            {classRows.map((classRow) => (
+              <Link
+                className={styles.classListItem}
+                href={`/app/classes/${classRow.id}`}
+                key={classRow.id}
+              >
+                <span className={styles.classListCopy}>
+                  <span className={styles.classListName}>
+                    {classRow.className}
+                  </span>
+                  <span className={styles.classListNext}>
+                    {classRow.nextClassLabel}
+                  </span>
+                </span>
+                <span className={styles.classListArrow} aria-hidden='true'>
+                  <svg viewBox='0 0 24 24'>
+                    <path d='m9 6 6 6-6 6' />
+                  </svg>
+                </span>
+              </Link>
+            ))}
+          </section>
+        </>
+      )}
 
       {isAddClassModalOpen ? (
         <div
@@ -669,6 +718,7 @@ function ClassesPage() {
                                     event.target.value,
                                   )
                                 }
+                                step={900}
                                 type='time'
                                 value={row.startTime}
                               />
@@ -696,6 +746,7 @@ function ClassesPage() {
                                     event.target.value,
                                   )
                                 }
+                                step={900}
                                 type='time'
                                 value={row.endTime}
                               />
