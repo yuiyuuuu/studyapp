@@ -1,6 +1,6 @@
 .shell {
   --sidebar-width: 320px;
-  --sidebar-peek: 42px;
+  --sidebar-peek: 50px;
   position: relative;
   display: block;
   min-height: 100vh;
@@ -500,9 +500,9 @@
 
   background-size: 400% 400%;
 
-  -webkit-animation: heroPanelGradientAnimation 8s ease infinite;
-  -moz-animation: heroPanelGradientAnimation 8s ease infinite;
-  animation: heroPanelGradientAnimation 8s ease infinite;
+  -webkit-animation: heroPanelGradientAnimation 6s ease infinite;
+  -moz-animation: heroPanelGradientAnimation 6s ease infinite;
+  animation: heroPanelGradientAnimation 6s ease infinite;
 }
 
 @keyframes heroPanelGradientAnimation {
@@ -595,6 +595,7 @@
   transition:
     transform 240ms var(--ease-out),
     box-shadow 240ms var(--ease-out);
+  cursor: pointer;
 }
 
 .card:hover {
@@ -634,6 +635,320 @@
   font-weight: 600;
   line-height: 1.04;
   letter-spacing: -0.02em;
+}
+
+.classCardMeta {
+  margin-top: 0.5rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.classesActionRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.addClassButton {
+  min-height: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  cursor: pointer;
+  padding: 0 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition:
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
+}
+
+.addClassButton:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+.addClassButton:active {
+  transform: scale(0.97);
+}
+
+.classesModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(var(--background-rgb), 0.74);
+  backdrop-filter: blur(4px);
+}
+
+.classesModal {
+  width: min(100%, 860px);
+  max-height: min(90vh, 900px);
+  overflow: auto;
+  background: var(--card);
+  border: 1px solid rgba(var(--border-rgb), 0.9);
+  border-radius: 1.4rem;
+  box-shadow: var(--shadow-float);
+  position: relative;
+}
+
+.classesModalInner {
+  padding: 2rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.classesModal button {
+  cursor: pointer;
+}
+
+.classesModal button:disabled {
+  cursor: not-allowed;
+}
+
+.modalCloseButton {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid rgba(var(--border-rgb), 0.85);
+  border-radius: 999px;
+  background: rgba(var(--surface-rgb), 0.8);
+  color: var(--foreground);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out);
+}
+
+.modalCloseButton:hover {
+  border-color: var(--secondary);
+  background: rgba(var(--secondary-rgb), 0.14);
+  transform: translateY(-1px) scale(1.03);
+}
+
+.modalCloseButton:active {
+  transform: scale(0.95);
+}
+
+.modalCloseButton svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.classesModalHeader {
+  display: grid;
+  gap: 0.65rem;
+  padding-right: 2.6rem;
+}
+
+.classModalTitle {
+  font-size: clamp(1.75rem, 4vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+}
+
+.classesUploadArea {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.uploadSyllabusButton,
+.classSectionAction,
+.classPrimaryButton,
+.classSecondaryButton {
+  min-height: 2.7rem;
+  border: 1px solid rgba(var(--border-rgb), 0.85);
+  border-radius: 999px;
+  background: rgba(var(--surface-rgb), 0.75);
+  color: var(--foreground);
+  padding: 0 1rem;
+  width: fit-content;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition:
+    border-color 200ms var(--ease-out),
+    background-color 200ms var(--ease-out),
+    transform 200ms var(--ease-out);
+}
+
+.uploadSyllabusButton:hover,
+.classSectionAction:hover,
+.classPrimaryButton:hover,
+.classSecondaryButton:hover {
+  border-color: var(--secondary);
+  background: rgba(var(--secondary-rgb), 1);
+  transform: translateY(-1px);
+}
+
+.classPrimaryButton {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-color: transparent;
+}
+
+.classSectionAction:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.manualEntryTextButton,
+.backToUploadButton,
+.classRemoveRowButton {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-size: 0.95rem;
+  text-decoration: underline;
+  text-underline-offset: 0.16rem;
+}
+
+.manualEntryTextButton:hover,
+.backToUploadButton:hover,
+.classRemoveRowButton:hover {
+  color: var(--secondary);
+}
+
+.classRemoveRowButton:disabled {
+  color: var(--muted-foreground);
+  cursor: not-allowed;
+}
+
+.classesForm {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.classFormSection {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid rgba(var(--border-rgb), 0.75);
+  border-radius: 1.2rem;
+  background: rgba(var(--surface-rgb), 0.35);
+}
+
+.classFormSectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.classSectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.classSectionDescription {
+  color: var(--muted-foreground);
+}
+
+.classFormRows {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.classFormRowCard {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(var(--border-rgb), 0.75);
+  border-radius: 1rem;
+  background: rgba(var(--surface-rgb), 0.45);
+}
+
+.classFormRowHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.classRowTitle {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.classFormRowGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.classFormLabel {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.classFormInput {
+  min-height: 2.75rem;
+  border: 1px solid rgba(var(--border-rgb), 0.85);
+  border-radius: 1rem;
+  background: rgba(var(--surface-rgb), 0.7);
+  color: var(--foreground);
+  padding: 0.7rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+}
+
+.classFormInput:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.requiredMark {
+  color: #ef4444;
+}
+
+.formError {
+  color: #ef4444;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.classFormFooter {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.65rem;
 }
 
 .listCard {
@@ -880,6 +1195,14 @@
   .pageContent {
     padding: 5rem 0 0 0;
   }
+
+  .classFormRowGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .classesModal {
+    width: min(100%, 720px);
+  }
 }
 
 @media (max-width: 640px) {
@@ -890,6 +1213,32 @@
 
   .helpTitle {
     font-size: 1.45rem;
+  }
+
+  .classFormRowGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .classesModalOverlay {
+    padding: 0;
+  }
+
+  .classesModal {
+    width: 100%;
+    max-height: none;
+    min-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .classesModalInner {
+    padding: 1rem;
+  }
+
+  .classFormSectionHeader,
+  .classFormRowHeader,
+  .classFormFooter {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
@@ -941,7 +1290,7 @@
 }
 
 .calendarIconButton svg,
-.calendarModalClose svg {
+.modalCloseButton svg {
   width: 1rem;
   height: 1rem;
   fill: none;
@@ -1076,6 +1425,15 @@
   flex-shrink: 0;
 }
 
+.calendarDayOverflowCount {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 .calendarDayToday {
   border-color: var(--secondary);
   background: rgba(var(--secondary-rgb), 0.14);
@@ -1125,21 +1483,6 @@
   display: grid;
   gap: 1rem;
   position: relative;
-}
-
-.calendarModalClose {
-  position: absolute;
-  top: 0.8rem;
-  right: 0.8rem;
-  width: 2.4rem;
-  height: 2.4rem;
-  border: 1px solid rgba(var(--border-rgb), 0.85);
-  border-radius: 999px;
-  background: rgba(var(--surface-rgb), 0.8);
-  color: var(--foreground);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .calendarModalHeader {

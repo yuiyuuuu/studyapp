@@ -204,3 +204,8 @@ main {
     scroll-behavior: auto !important;
   }
 }
+
+flex {
+  display: flex;
+  align-items: center;
+}

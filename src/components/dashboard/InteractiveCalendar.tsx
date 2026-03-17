@@ -23,6 +23,7 @@ type CalendarEvent = {
 type EventsByDate = Record<string, CalendarEvent[]>;
 
 const STORAGE_KEY = "studyapp-calendar-events";
+const MAX_DAY_EVENT_DOTS = 5;
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_LABELS = [
   "January",
@@ -531,7 +532,8 @@ export function InteractiveCalendar() {
               (eventA, eventB) =>
                 PRIORITY_RANK[eventA.priority] - PRIORITY_RANK[eventB.priority],
             )
-            .slice(0, 5);
+            .slice(0, MAX_DAY_EVENT_DOTS);
+          const hiddenEventCount = dayEvents.length - dayEventDots.length;
           const isToday = dateKey === toDateKey(today);
           const isSelected = dateKey === selectedDateKey;
 
@@ -563,6 +565,11 @@ export function InteractiveCalendar() {
                       }
                     />
                   ))}
+                  {hiddenEventCount > 0 ? (
+                    <span className={styles.calendarDayOverflowCount}>
+                      +{hiddenEventCount}
+                    </span>
+                  ) : null}
                 </span>
               ) : null}
             </button>
@@ -583,7 +590,7 @@ export function InteractiveCalendar() {
             <div className={styles.calendarModalInner}>
               <button
                 type='button'
-                className={styles.calendarModalClose}
+                className={styles.modalCloseButton}
                 onClick={closeModal}
                 aria-label='Close'
               >
